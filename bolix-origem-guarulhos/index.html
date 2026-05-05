@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Pesquisa Bolix — Origem do Cliente — Guarulhos</title>
+<style>
+  :root{--purple:#503294;--green:#a8cc3a;--green-2:#87a72e;--ink:#1f1730;--ink-soft:#3a2f55;--muted:#8478a3;--paper:#fff;--line:#e7dff5;--bg:linear-gradient(135deg,#1c0f3b 0%,#3b245c 55%,#503294 100%);}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);height:100%;overflow:hidden;}
+  body{background:var(--bg);position:fixed;inset:0;}
+  .topbar{position:fixed;top:0;left:0;right:0;height:56px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:rgba(28,15,59,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.08);}
+  .brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:800;letter-spacing:-.01em;}
+  .brand img{height:36px;width:auto;display:block;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.4);}
+  .brand .name{font-size:15px;}
+  .brand .name small{display:block;font-size:10.5px;opacity:.7;font-weight:500;letter-spacing:.05em;text-transform:uppercase;}
+  .progress-wrap{flex:1;max-width:360px;margin:0 16px;}
+  .progress-bar{height:6px;background:rgba(255,255,255,.18);border-radius:99px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--green),#cdee5a);border-radius:99px;width:0%;transition:width .35s cubic-bezier(.2,.8,.3,1);}
+  .progress-label{color:rgba(255,255,255,.85);font-size:11px;margin-top:4px;text-align:right;font-weight:600;letter-spacing:.05em;}
+  .unit-pill{background:rgba(168,204,58,.25);border:1px solid rgba(168,204,58,.55);color:#e6f6a8;font-size:11px;font-weight:700;padding:5px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis;}
+  .stage{position:absolute;inset:56px 0 0 0;overflow:hidden;}
+  .track{display:flex;height:100%;width:max-content;transition:transform .55s cubic-bezier(.2,.8,.25,1);}
+  .screen{width:100vw;height:100%;display:flex;flex-direction:row;flex-shrink:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .pane-visual{flex:0 0 42%;position:relative;overflow:hidden;background:#0a0612;display:flex;align-items:flex-end;justify-content:flex-start;padding:32px;}
+  .pane-visual img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85;}
+  .pane-visual::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(28,15,59,.55) 0%,rgba(80,50,148,.35) 60%,rgba(168,204,58,.18) 100%);}
+  .pane-visual .visual-tag{position:relative;z-index:2;color:#fff;}
+  .visual-tag .step-num{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.18em;background:var(--green);color:#1f1730;padding:6px 14px;border-radius:99px;margin-bottom:14px;}
+  .visual-tag h2{margin:0;font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.1;text-shadow:0 4px 20px rgba(0,0,0,.6);}
+  .visual-tag p{margin:10px 0 0;font-size:15px;opacity:.9;max-width:380px;text-shadow:0 2px 10px rgba(0,0,0,.5);}
+  .visual-logo-corner{position:absolute;top:18px;left:18px;z-index:3;width:54px;height:54px;border-radius:50%;box-shadow:0 6px 20px rgba(0,0,0,.45);background:#a8cc3a;}
+  .pane-form{flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 56px;background:var(--paper);overflow-y:auto;position:relative;}
+  .pane-form .inner{max-width:560px;width:100%;margin:auto 0;}
+  .form-watermark{position:absolute;top:14px;right:18px;width:54px;height:54px;opacity:.18;pointer-events:none;user-select:none;transition:opacity .3s;border-radius:50%;}
+  .pane-form:hover .form-watermark{opacity:.35;}
+  @media (max-width:860px){.screen{flex-direction:column;}.pane-visual{flex:0 0 200px;width:100%;padding:18px;align-items:flex-end;}.visual-tag h2{font-size:22px;}.visual-tag p{font-size:13px;}.visual-tag .step-num{font-size:11px;padding:4px 10px;margin-bottom:8px;}.pane-form{padding:22px 18px 80px;}.form-watermark{width:42px;height:42px;top:8px;right:10px;opacity:.22;}.visual-logo-corner{width:42px;height:42px;top:10px;left:10px;}}
+  .step-label{color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px;}
+  .q-title{font-size:26px;font-weight:800;color:var(--ink);margin:0 0 6px;line-height:1.25;letter-spacing:-.01em;}
+  .q-help{color:var(--muted);font-size:14px;margin:0 0 22px;}
+  @media (max-width:860px){.q-title{font-size:21px;}}
+  .field-input{width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:12px;font-size:16px;font-family:inherit;color:var(--ink);background:#fff;}
+  .field-input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 4px rgba(80,50,148,.10);}
+  textarea.field-input{min-height:110px;resize:vertical;}
+  .opts{display:grid;gap:10px;}
+  .opts.cols-2{grid-template-columns:1fr 1fr;}
+  @media (max-width:520px){.opts.cols-2{grid-template-columns:1fr;}}
+  .opt{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#fafaff;border:2px solid var(--line);border-radius:12px;cursor:pointer;font-size:15px;transition:all .15s;line-height:1.3;font-weight:500;position:relative;}
+  .opt input{position:absolute;opacity:0;pointer-events:none;}
+  .opt .key{width:30px;height:30px;border-radius:8px;background:#fff;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:var(--purple);flex-shrink:0;transition:all .15s;}
+  .opt:hover{border-color:var(--purple);background:#f5f0ff;}
+  .opt:hover .key{border-color:var(--purple);}
+  .opt:has(input:checked){border-color:var(--green-2);background:rgba(168,204,58,.10);}
+  .opt:has(input:checked) .key{background:var(--green);border-color:var(--green-2);color:#1f1730;}
+  .lgpd{background:#faf7ff;border-left:3px solid var(--purple);padding:12px 14px;font-size:12.5px;color:var(--ink-soft);margin-top:14px;border-radius:0 8px 8px 0;}
+  .navbar{position:fixed;bottom:0;left:0;right:0;height:72px;z-index:30;background:rgba(28,15,59,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;padding:0 18px;gap:12px;}
+  .nav-btn{border:none;font-family:inherit;cursor:pointer;font-weight:800;padding:14px 22px;border-radius:12px;font-size:14.5px;display:inline-flex;align-items:center;gap:8px;transition:transform .12s,background .15s,opacity .15s;}
+  .nav-btn:active{transform:translateY(1px);}
+  .nav-btn.back{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.18);}
+  .nav-btn.back:hover{background:rgba(255,255,255,.14);}
+  .nav-btn.back[disabled]{opacity:.35;cursor:not-allowed;}
+  .nav-btn.next{background:var(--green);color:#1f1730;}
+  .nav-btn.next:hover{background:#bce04e;}
+  .nav-btn.next[disabled]{opacity:.55;cursor:not-allowed;}
+  .nav-btn.submit{background:#fff;color:var(--purple);}
+  .nav-btn.submit:hover{background:#fffbe5;}
+  .draft-mini{color:rgba(255,255,255,.7);font-size:11px;text-align:center;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .draft-mini button{background:transparent;border:none;color:rgba(255,255,255,.85);text-decoration:underline;cursor:pointer;font-size:11px;font-family:inherit;padding:0 4px;}
+  .draft-mini button:hover{color:var(--green);}
+  .screen.full{display:flex;align-items:stretch;}
+  .screen.full .pane-visual{flex:1;width:100vw;align-items:center;justify-content:center;text-align:center;padding:32px;}
+  .screen.full .pane-visual::after{background:linear-gradient(135deg,rgba(28,15,59,.7) 0%,rgba(80,50,148,.55) 60%,rgba(168,204,58,.25) 100%);}
+  .welcome-content{position:relative;z-index:2;color:#fff;max-width:640px;}
+  .welcome-content img.logo{height:130px;margin-bottom:18px;filter:drop-shadow(0 6px 20px rgba(0,0,0,.6));border-radius:50%;}
+  .welcome-content h1{font-size:44px;line-height:1.05;margin:0 0 14px;font-weight:900;letter-spacing:-.02em;text-shadow:0 4px 20px rgba(0,0,0,.6);}
+  .welcome-content p{font-size:17px;line-height:1.5;margin:0 0 30px;opacity:.95;text-shadow:0 2px 10px rgba(0,0,0,.5);}
+  .welcome-content .start-btn{background:var(--green);color:#1f1730;border:none;padding:18px 40px;font-weight:900;font-size:18px;border-radius:99px;cursor:pointer;font-family:inherit;box-shadow:0 10px 30px rgba(168,204,58,.4);display:inline-flex;align-items:center;gap:10px;transition:transform .15s;}
+  .welcome-content .start-btn:hover{transform:translateY(-2px);background:#bce04e;}
+  .welcome-content .start-btn::after{content:"→";font-size:22px;}
+  .welcome-content .meta{margin-top:24px;font-size:12.5px;opacity:.75;letter-spacing:.04em;}
+  .welcome-content .badge-unit-big{display:inline-block;background:rgba(168,204,58,.95);color:#1f1730;padding:8px 16px;border-radius:99px;font-weight:800;font-size:13px;margin-bottom:18px;text-transform:uppercase;letter-spacing:.04em;}
+  @media (max-width:860px){.welcome-content h1{font-size:30px;}.welcome-content p{font-size:14.5px;}.welcome-content img.logo{height:90px;}.welcome-content .start-btn{padding:14px 28px;font-size:15px;}}
+  .thanks-content{position:relative;z-index:2;color:#fff;max-width:560px;text-align:center;padding:20px;}
+  .thanks-logo{height:84px;margin:0 auto 18px;display:block;border-radius:50%;filter:drop-shadow(0 6px 20px rgba(0,0,0,.45));}
+  .thanks-content .check{width:90px;height:90px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 12px 40px rgba(168,204,58,.5);}
+  .thanks-content .check svg{width:48px;height:48px;}
+  .thanks-content h1{font-size:36px;margin:0 0 12px;font-weight:900;letter-spacing:-.02em;}
+  .thanks-content p{font-size:16px;opacity:.95;line-height:1.5;}
+  .pane-form::-webkit-scrollbar{width:8px;}
+  .pane-form::-webkit-scrollbar-thumb{background:#dbd2ee;border-radius:99px;}
+
+
+/* ===== Ajuste mobile cirúrgico — preserva arte original ===== */
+@media (max-width:860px){
+  html,body{
+    height:auto !important;
+    min-height:100% !important;
+    overflow:hidden !important;
+    position:fixed !important;
+    inset:0 !important;
+  }
+
+  .stage{
+    inset:56px 0 72px 0 !important; /* deixa a área acabar antes da barra inferior */
+    overflow:hidden !important;
+  }
+
+  .track{
+    height:100% !important;
+  }
+
+  .screen{
+    height:100% !important;
+    overflow:hidden !important;
+    flex-direction:column !important;
+  }
+
+  .pane-visual{
+    flex:0 0 118px !important;
+    width:100% !important;
+    min-height:118px !important;
+    padding:10px 16px !important;
+    align-items:flex-end !important;
+  }
+
+  .visual-logo-corner{
+    width:34px !important;
+    height:34px !important;
+    top:10px !important;
+    left:12px !important;
+  }
+
+  .visual-tag .step-num{
+    font-size:9.5px !important;
+    padding:3px 8px !important;
+    margin-bottom:5px !important;
+  }
+
+  .visual-tag h2{
+    font-size:18px !important;
+    line-height:1.08 !important;
+  }
+
+  .visual-tag p{
+    display:none !important;
+  }
+
+  .pane-form{
+    flex:1 1 auto !important;
+    min-height:0 !important;
+    justify-content:flex-start !important;
+    overflow-y:auto !important;
+    -webkit-overflow-scrolling:touch !important;
+    padding:14px 0 28px !important;
+  }
+
+  .pane-form .inner{
+    width:88% !important;          /* diminui largura REAL dos campos */
+    max-width:340px !important;
+    margin:0 auto !important;
+  }
+
+  .form-watermark{
+    width:36px !important;
+    height:36px !important;
+    top:8px !important;
+    right:12px !important;
+  }
+
+  .step-label{
+    font-size:10.5px !important;
+    margin-bottom:6px !important;
+  }
+
+  .q-title{
+    font-size:20px !important;
+    line-height:1.14 !important;
+    margin-bottom:5px !important;
+  }
+
+  .q-help{
+    font-size:13px !important;
+    margin-bottom:14px !important;
+  }
+
+  .opts{
+    gap:9px !important;
+    width:100% !important;
+  }
+
+  .opts.cols-2{
+    grid-template-columns:1fr !important;
+  }
+
+  .opt{
+    width:100% !important;
+    min-height:52px !important;
+    padding:10px 12px !important;
+    font-size:14px !important;
+    border-radius:11px !important;
+    gap:10px !important;
+  }
+
+  .opt .key{
+    width:28px !important;
+    height:28px !important;
+    font-size:12px !important;
+    border-radius:8px !important;
+  }
+
+  .field-input{
+    width:100% !important;
+    padding:12px 13px !important;
+    font-size:15px !important;
+    border-radius:11px !important;
+  }
+
+  .navbar{
+    height:72px !important;
+    padding:0 16px !important;
+  }
+
+  .draft-mini{
+    display:none !important;
+  }
+
+  .nav-btn{
+    padding:13px 18px !important;
+    font-size:14px !important;
+  }
+}
+
+@media (max-width:380px){
+  .pane-form .inner{width:86% !important;max-width:318px !important;}
+  .pane-visual{flex-basis:104px !important;min-height:104px !important;}
+  .q-title{font-size:19px !important;}
+  .opt{min-height:50px !important;padding:9px 10px !important;}
+}
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><img src="logo-bolix.png" alt="Bolix" onerror="this.style.display='none'"><div class="name">Pesquisa Bolix<small>Origem do Cliente</small></div></div>
+  <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div><div class="progress-label" id="progress-label">0 / 0</div></div>
+  <span class="unit-pill" id="unit-pill">—</span>
+</div>
+<div class="stage">
+  <form id="bolix-form" action="https://formsubmit.co/bolixpentagrama@gmail.com" method="POST">
+    <input type="hidden" name="_subject" id="subject-field" value="Pesquisa Origem do Cliente — Shopping Internacional de Guarulhos">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="true">
+    <input type="hidden" name="_autoresponse" value="Recebemos sua resposta na pesquisa Bolix. Obrigado por participar!">
+    <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+    <input type="hidden" name="00_unidade" id="unidade-input" value="Shopping Internacional de Guarulhos">
+    <input type="hidden" name="00_pesquisa" value="Origem do Cliente">
+    <div class="track" id="track">
+      <section class="screen full" data-screen="welcome">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="" onerror="this.style.opacity=0">
+          <div class="welcome-content">
+            <img class="logo" src="logo-bolix.png" alt="Bolix" onerror="this.style.display='none'">
+            <span class="badge-unit-big" id="badge-welcome">Unidade: —</span>
+            <h1>Sua opinião joga junto.</h1>
+            <p>Quer receber promoções, campanhas e convites especiais da Bolix? Responda esta jornada rápida — uma pergunta por vez. Leva menos de 2 minutos.</p>
+            <button type="button" class="start-btn" data-action="next">Começar</button>
+            <div class="meta">8 perguntas + dados básicos · suas respostas são salvas automaticamente</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q" data-required="01_nome">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag"><span class="step-num">DADOS BÁSICOS</span><h2>Vamos começar pelo essencial.</h2><p>Para receber promoções e convites depois, precisamos saber com quem estamos falando.</p></div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Pergunta 1</div>
+            <h2 class="q-title">Qual é o seu nome completo?</h2>
+            <p class="q-help">Digite o nome que você usa no dia a dia.</p>
+            <input type="text" name="01_nome" class="field-input" placeholder="Ex: Maria Silva" autocomplete="name" required>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q" data-required="01_whatsapp">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag"><span class="step-num">CONTATO</span><h2>Como falamos com você?</h2><p>É por aqui que enviaremos as melhores promoções e novidades.</p></div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Pergunta 2</div>
+            <h2 class="q-title">Informe o seu WhatsApp?</h2>
+            <p class="q-help">Use o número com DDD.</p>
+            <input type="tel" name="01_whatsapp" class="field-input" placeholder="(00) 00000-0000" autocomplete="tel" inputmode="numeric" maxlength="15" data-mask="phone" required>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag"><span class="step-num">CONTATO</span><h2>E-mail (opcional)</h2><p>Para receber convites de eventos e novidades por e-mail.</p></div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Pergunta 3</div>
+            <h2 class="q-title">Informe o seu email?</h2>
+            <p class="q-help">Pode pular se preferir, é opcional.</p>
+            <input type="email" name="01_email" class="field-input" placeholder="seuemail@exemplo.com" autocomplete="email">
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q" data-required="01_idade">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag">
+            <span class="step-num">SOBRE VOCÊ</span>
+            <h2>Quem está jogando hoje?</h2>
+            <p>Quanto mais soubermos, melhor a experiência fica.</p>
+          </div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Pergunta 4</div>
+            <h2 class="q-title">Sua faixa etária:</h2>
+            <p class="q-help">Selecione uma opção.</p>
+            <div class="opts">
+              <label class="opt"><span class="key">A</span><input type="radio" name="01_idade" value="Até 17"><span>Até 17</span></label>
+              <label class="opt"><span class="key">B</span><input type="radio" name="01_idade" value="18 a 24"><span>18 a 24</span></label>
+              <label class="opt"><span class="key">C</span><input type="radio" name="01_idade" value="25 a 34"><span>25 a 34</span></label>
+              <label class="opt"><span class="key">D</span><input type="radio" name="01_idade" value="35 a 44"><span>35 a 44</span></label>
+              <label class="opt"><span class="key">E</span><input type="radio" name="01_idade" value="45 a 54"><span>45 a 54</span></label>
+              <label class="opt"><span class="key">F</span><input type="radio" name="01_idade" value="55+"><span>55+</span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag">
+            <span class="step-num">SOBRE VOCÊ</span>
+            <h2>Onde você mora?</h2>
+            <p>Para entender de onde vem nossa torcida.</p>
+          </div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Pergunta 5</div>
+            <h2 class="q-title">Cidade ou região onde você mora:</h2>
+            <p class="q-help">Pode escrever bairro também, se quiser.</p>
+            <input type="text" name="01_cidade" class="field-input" placeholder="Ex: São Paulo - Vila Mariana">
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q" data-required="01_autoriza">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag">
+            <span class="step-num">PRIVACIDADE</span>
+            <h2>Você no controle.</h2>
+            <p>Promoções, convites e campanhas só com sua autorização.</p>
+          </div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Pergunta 6</div>
+            <h2 class="q-title">Podemos enviar promoções e convites?</h2>
+            <p class="q-help">Pelo WhatsApp, e-mail ou outros canais que você informou.</p>
+            <div class="opts cols-2">
+              <label class="opt"><span class="key">S</span><input type="radio" name="01_autoriza" value="Sim"><span>Sim, autorizo</span></label>
+              <label class="opt"><span class="key">N</span><input type="radio" name="01_autoriza" value="Não"><span>Não, agora não</span></label>
+            </div>
+            <div class="lgpd">
+              Seus dados serão utilizados pela Bolix para comunicação de campanhas, promoções, convites especiais e melhoria da experiência, conforme a Lei Geral de Proteção de Dados (LGPD).
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag">
+            <span class="step-num">PERGUNTA 7 / 14</span>
+            <h2>Como conheceu?</h2>
+            <p>O caminho que te trouxe até aqui.</p>
+          </div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Origem</div>
+            <h2 class="q-title">Como você ficou sabendo da Bolix?</h2>
+            
+            <div class="opts">
+              <label class="opt"><span class="key">A</span><input type="radio" name="11_canal" value="Já conhecia"><span>Já conhecia</span></label>
+              <label class="opt"><span class="key">B</span><input type="radio" name="11_canal" value="Amigos / família"><span>Amigos / família</span></label>
+              <label class="opt"><span class="key">C</span><input type="radio" name="11_canal" value="Instagram"><span>Instagram</span></label>
+              <label class="opt"><span class="key">D</span><input type="radio" name="11_canal" value="Google"><span>Google</span></label>
+              <label class="opt"><span class="key">E</span><input type="radio" name="11_canal" value="Passei em frente"><span>Passei em frente</span></label>
+              <label class="opt"><span class="key">F</span><input type="radio" name="11_canal" value="Shopping"><span>Shopping</span></label>
+              <label class="opt"><span class="key">G</span><input type="radio" name="11_canal" value="Evento / aniversário"><span>Evento / aniversário</span></label>
+              <label class="opt"><span class="key">H</span><input type="radio" name="11_canal" value="Indicação de empresa / escola"><span>Indicação de empresa / escola</span></label>
+              <label class="opt"><span class="key">I</span><input type="radio" name="11_canal" value="Outro"><span>Outro</span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag">
+            <span class="step-num">PERGUNTA 8 / 14</span>
+            <h2>Pesquisou antes?</h2>
+            <p>Antes de vir, alguém deu uma olhada online?</p>
+          </div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Pesquisa</div>
+            <h2 class="q-title">Antes de vir hoje, você procurou informações sobre a Bolix?</h2>
+            
+            <div class="opts">
+              <label class="opt"><span class="key">A</span><input type="radio" name="12_pesquisou" value="Sim, no Google"><span>Sim, no Google</span></label>
+              <label class="opt"><span class="key">B</span><input type="radio" name="12_pesquisou" value="Sim, no Instagram"><span>Sim, no Instagram</span></label>
+              <label class="opt"><span class="key">C</span><input type="radio" name="12_pesquisou" value="Sim, no site"><span>Sim, no site</span></label>
+              <label class="opt"><span class="key">D</span><input type="radio" name="12_pesquisou" value="Sim, perguntei para alguém"><span>Sim, perguntei para alguém</span></label>
+              <label class="opt"><span class="key">E</span><input type="radio" name="12_pesquisou" value="Não procurei"><span>Não procurei</span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag">
+            <span class="step-num">PERGUNTA 9 / 14</span>
+            <h2>O que pesou?</h2>
+            <p>O que mais influenciou hoje.</p>
+          </div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Decisão</div>
+            <h2 class="q-title">O que mais influenciou sua decisão de vir?</h2>
+            
+            <div class="opts cols-2">
+              <label class="opt"><span class="key">A</span><input type="radio" name="13_influencia" value="Já conhecia"><span>Já conhecia</span></label>
+              <label class="opt"><span class="key">B</span><input type="radio" name="13_influencia" value="Convite de alguém"><span>Convite de alguém</span></label>
+              <label class="opt"><span class="key">C</span><input type="radio" name="13_influencia" value="Localização"><span>Localização</span></label>
+              <label class="opt"><span class="key">D</span><input type="radio" name="13_influencia" value="Promoção"><span>Promoção</span></label>
+              <label class="opt"><span class="key">E</span><input type="radio" name="13_influencia" value="Curiosidade"><span>Curiosidade</span></label>
+              <label class="opt"><span class="key">F</span><input type="radio" name="13_influencia" value="Estava no shopping"><span>Estava no shopping</span></label>
+              <label class="opt"><span class="key">G</span><input type="radio" name="13_influencia" value="Falta de outra opção melhor"><span>Falta de outra opção melhor</span></label>
+              <label class="opt"><span class="key">H</span><input type="radio" name="13_influencia" value="Vontade de jogar boliche"><span>Vontade de jogar boliche</span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag">
+            <span class="step-num">PERGUNTA 10 / 14</span>
+            <h2>Por causa da Bolix?</h2>
+            <p>Veio especificamente para a gente?</p>
+          </div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Motivação</div>
+            <h2 class="q-title">Hoje você veio ao shopping por causa da Bolix?</h2>
+            
+            <div class="opts">
+              <label class="opt"><span class="key">A</span><input type="radio" name="14_porque" value="Sim, vim direto para a Bolix"><span>Sim, vim direto para a Bolix</span></label>
+              <label class="opt"><span class="key">B</span><input type="radio" name="14_porque" value="Não, já estava no shopping"><span>Não, já estava no shopping</span></label>
+              <label class="opt"><span class="key">C</span><input type="radio" name="14_porque" value="Vim por outro motivo e aproveitei"><span>Vim por outro motivo e aproveitei</span></label>
+              <label class="opt"><span class="key">D</span><input type="radio" name="14_porque" value="Fui convidado por alguém"><span>Fui convidado por alguém</span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag">
+            <span class="step-num">PERGUNTA 11 / 14</span>
+            <h2>O que veio fazer primeiro?</h2>
+            <p>Se já estava no shopping antes.</p>
+          </div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Contexto</div>
+            <h2 class="q-title">Se você já estava no shopping, o que veio fazer primeiro?</h2>
+            <p class="q-help">Pode pular se não se aplica.</p>
+            <div class="opts cols-2">
+              <label class="opt"><span class="key">A</span><input type="radio" name="15_primeiro" value="Comer"><span>Comer</span></label>
+              <label class="opt"><span class="key">B</span><input type="radio" name="15_primeiro" value="Comprar"><span>Comprar</span></label>
+              <label class="opt"><span class="key">C</span><input type="radio" name="15_primeiro" value="Cinema"><span>Cinema</span></label>
+              <label class="opt"><span class="key">D</span><input type="radio" name="15_primeiro" value="Passear"><span>Passear</span></label>
+              <label class="opt"><span class="key">E</span><input type="radio" name="15_primeiro" value="Resolver algo"><span>Resolver algo</span></label>
+              <label class="opt"><span class="key">F</span><input type="radio" name="15_primeiro" value="Encontrar alguém"><span>Encontrar alguém</span></label>
+              <label class="opt"><span class="key">G</span><input type="radio" name="15_primeiro" value="Só circular"><span>Só circular</span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag">
+            <span class="step-num">PERGUNTA 12 / 14</span>
+            <h2>Por onde te lembramos?</h2>
+            <p>O canal que mais funciona com você.</p>
+          </div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Canal</div>
+            <h2 class="q-title">Qual canal mais faria você lembrar da Bolix para voltar?</h2>
+            
+            <div class="opts">
+              <label class="opt"><span class="key">A</span><input type="radio" name="16_canal_volta" value="WhatsApp"><span>WhatsApp</span></label>
+              <label class="opt"><span class="key">B</span><input type="radio" name="16_canal_volta" value="Instagram"><span>Instagram</span></label>
+              <label class="opt"><span class="key">C</span><input type="radio" name="16_canal_volta" value="Google"><span>Google</span></label>
+              <label class="opt"><span class="key">D</span><input type="radio" name="16_canal_volta" value="E-mail"><span>E-mail</span></label>
+              <label class="opt"><span class="key">E</span><input type="radio" name="16_canal_volta" value="Indicação de amigos"><span>Indicação de amigos</span></label>
+              <label class="opt"><span class="key">F</span><input type="radio" name="16_canal_volta" value="Comunicação dentro do shopping"><span>Comunicação dentro do shopping</span></label>
+              <label class="opt"><span class="key">G</span><input type="radio" name="16_canal_volta" value="Promoções no próprio local"><span>Promoções no próprio local</span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag">
+            <span class="step-num">PERGUNTA 13 / 14</span>
+            <h2>Já segue a gente?</h2>
+            <p>Nas redes sociais.</p>
+          </div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Conexão</div>
+            <h2 class="q-title">Você já segue ou acompanhou a Bolix nas redes sociais?</h2>
+            
+            <div class="opts cols-2">
+              <label class="opt"><span class="key">A</span><input type="radio" name="17_redes" value="Sim"><span>Sim</span></label>
+              <label class="opt"><span class="key">B</span><input type="radio" name="17_redes" value="Não"><span>Não</span></label>
+              <label class="opt"><span class="key">C</span><input type="radio" name="17_redes" value="Não sabia que tinha"><span>Não sabia que tinha</span></label>
+              <label class="opt"><span class="key">D</span><input type="radio" name="17_redes" value="Vou procurar depois"><span>Vou procurar depois</span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag">
+            <span class="step-num">PERGUNTA 14 / 14</span>
+            <h2>Que conteúdo atrai?</h2>
+            <p>O que faria você querer voltar.</p>
+          </div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Engajamento</div>
+            <h2 class="q-title">Que tipo de informação faria você ter mais vontade de voltar?</h2>
+            
+            <div class="opts cols-2">
+              <label class="opt"><span class="key">A</span><input type="radio" name="18_info_volta" value="Promoções"><span>Promoções</span></label>
+              <label class="opt"><span class="key">B</span><input type="radio" name="18_info_volta" value="Combos"><span>Combos</span></label>
+              <label class="opt"><span class="key">C</span><input type="radio" name="18_info_volta" value="Eventos"><span>Eventos</span></label>
+              <label class="opt"><span class="key">D</span><input type="radio" name="18_info_volta" value="Aniversários"><span>Aniversários</span></label>
+              <label class="opt"><span class="key">E</span><input type="radio" name="18_info_volta" value="Pacotes para grupos"><span>Pacotes para grupos</span></label>
+              <label class="opt"><span class="key">F</span><input type="radio" name="18_info_volta" value="Novidades"><span>Novidades</span></label>
+              <label class="opt"><span class="key">G</span><input type="radio" name="18_info_volta" value="Convites especiais"><span>Convites especiais</span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="q">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <img class="visual-logo-corner" src="logo-bolix.png" alt="">
+          <div class="visual-tag"><span class="step-num">FINAL</span><h2>Quer deixar um recado?</h2><p>É opcional — mas a gente lê todos.</p></div>
+        </div>
+        <div class="pane-form">
+          <img class="form-watermark" src="logo-bolix.png" alt="" aria-hidden="true">
+          <div class="inner">
+            <div class="step-label">Bônus</div>
+            <h2 class="q-title">Algo a mais que queira nos contar?</h2>
+            <p class="q-help">Elogio, sugestão, reclamação, qualquer coisa. Pode pular se preferir.</p>
+            <textarea name="10_recado" class="field-input" placeholder="Conte aqui o que mais quiser sobre sua experiência…"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen full" data-screen="thanks">
+        <div class="pane-visual">
+          <img class="bg" src="hero.jpg" alt="">
+          <div class="thanks-content">
+            <img src="logo-bolix.png" alt="Bolix" class="thanks-logo">
+            <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="#1f1730" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+            <h1>Obrigado!</h1>
+            <p>Revise rapidamente se quiser. Quando estiver pronto, é só enviar — chega direto para a equipe Bolix.</p>
+          </div>
+        </div>
+      </section>    </div>
+  </form>
+</div>
+<div class="navbar">
+  <button type="button" class="nav-btn back" id="btn-back" disabled>← Voltar</button>
+  <div class="draft-mini">
+    <span id="draft-status">Salvo automaticamente</span>
+    ·
+    <button type="button" id="btn-export-mini">Baixar rascunho</button>
+    ·
+    <button type="button" id="btn-import-mini">Carregar</button>
+  </div>
+  <button type="button" class="nav-btn next" id="btn-next">Avançar →</button>
+  <button type="submit" form="bolix-form" class="nav-btn submit" id="btn-submit" style="display:none">Enviar pesquisa ✓</button>
+  <input type="file" id="import-file" accept="application/json" style="display:none">
+</div>
+<script>
+(function(){
+  'use strict';
+  var UNIDADES = {interlagos:'Shopping Interlagos',abc:'Grand Plaza ABC',guarulhos:'Shopping Internacional de Guarulhos',patio:'Shopping Pátio Paulista'};
+  var params = new URLSearchParams(location.search);
+  var u = (params.get('u')||'guarulhos').toLowerCase().trim();
+  var unidadeNome = UNIDADES[u]||'';
+  var subjectField = document.getElementById('subject-field');
+  var unidadeInput = document.getElementById('unidade-input');
+  var unitPill = document.getElementById('unit-pill');
+  var badgeWelcome = document.getElementById('badge-welcome');
+  if (unidadeNome){
+    unitPill.textContent = unidadeNome.replace('Shopping ','').replace('Grand Plaza ','');
+    badgeWelcome.textContent = 'Unidade: '+unidadeNome;
+    unidadeInput.value = unidadeNome;
+    subjectField.value = 'Pesquisa Origem do Cliente — '+unidadeNome;
+  } else { unitPill.textContent='Geral'; badgeWelcome.textContent='Unidade: a confirmar'; unidadeInput.value='Não identificada'; }
+
+  var track = document.getElementById('track');
+  var screens = Array.from(track.querySelectorAll('.screen'));
+  var total = screens.length;
+  var btnBack = document.getElementById('btn-back');
+  var btnNext = document.getElementById('btn-next');
+  var btnSubmit = document.getElementById('btn-submit');
+  var fill = document.getElementById('progress-fill');
+  var label = document.getElementById('progress-label');
+  var idx = 0;
+
+  function isAnswered(screen){
+    var required = screen.dataset.required;
+    if (!required) return true;
+    var els = screen.querySelectorAll('[name="'+required+'"]');
+    if (!els.length) return true;
+    if (els[0].type==='radio'||els[0].type==='checkbox'){return Array.from(els).some(function(el){return el.checked;});}
+    return Array.from(els).every(function(el){return el.value && el.value.trim().length>0;});
+  }
+  function updateNav(){
+    var screen = screens[idx];
+    btnBack.disabled = (idx===0);
+    var isLast = (idx===total-1);
+    if (isLast){btnNext.style.display='none';btnSubmit.style.display='';}
+    else{btnNext.style.display='';btnSubmit.style.display='none';btnNext.disabled=!isAnswered(screen);}
+    var pct = Math.round(((idx)/(total-1))*100);
+    fill.style.width = pct+'%';
+    label.textContent = (idx+1)+' / '+total;
+  }
+  function go(to){
+    if (to<0||to>=total) return;
+    idx = to;
+    track.style.transform = 'translateX(-'+(idx*100)+'vw)';
+    var pane = screens[idx].querySelector('.pane-form'); if (pane) pane.scrollTop = 0;
+    updateNav();
+    setTimeout(function(){
+      var screen = screens[idx];
+      var auto = screen.querySelector('input[type=text],input[type=tel],input[type=email],textarea,select');
+      if (auto && idx>0) auto.focus({preventScroll:true});
+    },600);
+  }
+  btnNext.addEventListener('click',function(){
+    if (!isAnswered(screens[idx])) return;
+    go(idx+1);
+  });
+  btnBack.addEventListener('click',function(){go(idx-1);});
+  document.querySelectorAll('[data-action="next"]').forEach(function(b){b.addEventListener('click',function(){go(idx+1);});});
+
+  document.addEventListener('keydown',function(ev){
+    if (ev.target.matches('textarea')) return;
+    if (ev.key==='Enter'){
+      ev.preventDefault();
+      if (idx===total-1){document.getElementById('bolix-form').requestSubmit();}
+      else if (isAnswered(screens[idx])){go(idx+1);}
+    }
+    if (ev.key==='ArrowRight' && !ev.target.matches('input,textarea,select')) go(idx+1);
+    if (ev.key==='ArrowLeft' && !ev.target.matches('input,textarea,select')) go(idx-1);
+  });
+  screens.forEach(function(screen){
+    var opts = screen.querySelectorAll('.opt');
+    if (!opts.length) return;
+    opts.forEach(function(opt,i){
+      var keyEl = opt.querySelector('.key');
+      var letter = String.fromCharCode(65+i);
+      if (keyEl && !keyEl.textContent.trim()) keyEl.textContent = letter;
+      opt.dataset.key = (keyEl ? keyEl.textContent.trim().toLowerCase() : letter.toLowerCase());
+    });
+  });
+  document.addEventListener('keydown',function(ev){
+    if (ev.target.matches('input,textarea,select')) return;
+    var key = ev.key.toLowerCase();
+    if (!/^[a-z]$/.test(key)) return;
+    var screen = screens[idx];
+    var opt = screen.querySelector('.opt[data-key="'+key+'"]');
+    if (!opt) return;
+    var input = opt.querySelector('input');
+    if (input){input.checked=true;input.dispatchEvent(new Event('change',{bubbles:true}));setTimeout(function(){go(idx+1);},250);}
+  });
+  screens.forEach(function(screen){
+    screen.querySelectorAll('input[type=radio]').forEach(function(r){
+      r.addEventListener('change',function(){
+        updateNav();
+        if (screen===screens[idx] && idx<total-1 && !screen.querySelector('textarea')){setTimeout(function(){go(idx+1);},280);}
+      });
+    });
+    screen.querySelectorAll('input[type=text],input[type=tel],input[type=email],textarea').forEach(function(el){el.addEventListener('input',updateNav);});
+  });
+
+  var storageKey = function(){return 'bolix.pesquisa.origem.'+(u||'sem-unidade');};
+  var form = document.getElementById('bolix-form');
+  var statusEl = document.getElementById('draft-status');
+  var saveTimer;
+  function snapshot(){var data={};new FormData(form).forEach(function(val,key){if (key.charAt(0)==='_') return;data[key]=val;});return data;}
+  function persist(){try{localStorage.setItem(storageKey(),JSON.stringify(snapshot()));var n=new Date();statusEl.textContent='Salvo às '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');}catch(e){}}
+  function restore(){try{var raw=localStorage.getItem(storageKey());if(!raw) return;var data=JSON.parse(raw);Object.keys(data).forEach(function(name){var value=data[name];var els=form.querySelectorAll('[name="'+CSS.escape(name)+'"]');els.forEach(function(el){if(el.type==='radio'||el.type==='checkbox'){el.checked=(el.value===value);}else{el.value=value;}});});}catch(e){}}
+  form.addEventListener('input',function(){clearTimeout(saveTimer);saveTimer=setTimeout(persist,350);});
+  form.addEventListener('change',persist);
+  form.addEventListener('submit',function(){var key=storageKey();setTimeout(function(){try{localStorage.removeItem(key);}catch(e){}},1500);});
+  document.getElementById('btn-export-mini').addEventListener('click',function(){
+    var blob = new Blob([JSON.stringify(snapshot(),null,2)],{type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var stamp = new Date().toISOString().slice(0,16).replace(/[:T]/g,'-');
+    a.href=url;a.download='rascunho-origem-'+(u||'sem-unidade')+'-'+stamp+'.json';a.click();URL.revokeObjectURL(url);
+  });
+  var importBtn = document.getElementById('btn-import-mini');
+  var importFile = document.getElementById('import-file');
+  importBtn.addEventListener('click',function(){importFile.click();});
+  importFile.addEventListener('change',function(ev){
+    var file = ev.target.files[0]; if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e){try{var data=JSON.parse(e.target.result);localStorage.setItem(storageKey(),JSON.stringify(data));restore();statusEl.textContent='Rascunho carregado.';updateNav();}catch(err){alert('Não foi possível ler este arquivo.');}};
+    reader.readAsText(file); importFile.value='';
+  });
+
+  function applyPhoneMask(value){
+    var digits = String(value||'').replace(/\D/g,'').slice(0,11);
+    if (digits.length===0) return '';
+    if (digits.length<=2)  return '('+digits;
+    if (digits.length<=7)  return '('+digits.slice(0,2)+') '+digits.slice(2);
+    return '('+digits.slice(0,2)+') '+digits.slice(2,7)+'-'+digits.slice(7);
+  }
+  document.querySelectorAll('input[data-mask="phone"]').forEach(function(el){
+    el.addEventListener('input',function(){var old=el.value;var f=applyPhoneMask(old);if(old!==f) el.value=f;});
+    el.addEventListener('blur',function(){el.value=applyPhoneMask(el.value);});
+    if (el.value) el.value = applyPhoneMask(el.value);
+  });
+
+  restore();
+  updateNav();
+})();
+</script>
+</body>
+</html>
